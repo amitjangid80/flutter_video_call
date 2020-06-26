@@ -70,14 +70,14 @@ class _CallPageState extends State<CallPage> {
   void _addAgoraEventHandlers() {
     AgoraRtcEngine.onError = (dynamic code) {
       setState(() {
-        final info = 'onError: $code';
+        // final info = 'onError: $code';
         // _infoStrings.add(info);
       });
     };
 
     AgoraRtcEngine.onJoinChannelSuccess = (String channel, int uid, int elapsed) {
       setState(() {
-        final info = 'onJoinChannel: $channel, uid: $uid';
+        // final info = 'onJoinChannel: $channel, uid: $uid';
         // _infoStrings.add(info);
       });
     };
@@ -91,7 +91,7 @@ class _CallPageState extends State<CallPage> {
 
     AgoraRtcEngine.onUserJoined = (int uid, int elapsed) {
       setState(() {
-        final info = 'userJoined: $uid';
+        // final info = 'userJoined: $uid';
         // _infoStrings.add(info);
         _users.add(uid);
       });
@@ -99,7 +99,7 @@ class _CallPageState extends State<CallPage> {
 
     AgoraRtcEngine.onUserOffline = (int uid, int reason) {
       setState(() {
-        final info = 'userOffline: $uid';
+        // final info = 'userOffline: $uid';
         // _infoStrings.add(info);
         _users.remove(uid);
       });
@@ -107,7 +107,7 @@ class _CallPageState extends State<CallPage> {
 
     AgoraRtcEngine.onFirstRemoteVideoFrame = (int uid, int width, int height, int elapsed) {
       setState(() {
-        final info = 'firstRemoteVideo: $uid ${width}x $height';
+        // final info = 'firstRemoteVideo: $uid ${width}x $height';
         // _infoStrings.add(info);
       });
     };
@@ -130,11 +130,12 @@ class _CallPageState extends State<CallPage> {
   Widget _expandedVideoRow(List<Widget> views) {
     final wrappedViews = views.map<Widget>(_videoView).toList();
 
-    return Expanded(child: Row(children: wrappedViews));
+    return Row(children: wrappedViews);
+    // return Expanded(child: Row(children: wrappedViews));
   }
 
   // Video layout wrapper
-  Widget _viewRows() {
+  Widget _viewRows(_width, _height) {
     final views = _getRenderViews();
 
     switch (views.length) {
@@ -143,10 +144,25 @@ class _CallPageState extends State<CallPage> {
 
       case 2:
         return Container(
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              _expandedVideoRow([views[0]]),
+              // _expandedVideoRow([views[0]]),
               _expandedVideoRow([views[1]]),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: _width * 0.35,
+                  height: _height * 0.20,
+                  child: Material(
+                    elevation: 4,
+                    type: MaterialType.card,
+                    clipBehavior: Clip.antiAlias,
+                    child: _expandedVideoRow([views[0]]),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -265,10 +281,13 @@ class _CallPageState extends State<CallPage> {
 
   @override
   Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(title: Text('Agora Flutter QuickStart')),
-      body: Center(child: Stack(children: <Widget>[_viewRows(), _panel(), _toolbar()])),
+      body: Center(child: Stack(children: <Widget>[_viewRows(_width, _height), _panel(), _toolbar()])),
     );
   }
 }
