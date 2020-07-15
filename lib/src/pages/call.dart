@@ -7,8 +7,11 @@ class CallPage extends StatefulWidget {
   // non-modifiable channel name of the page
   final String channelName;
 
-  // Creates a call page with given channel name.
-  const CallPage({Key key, this.channelName}) : super(key: key);
+  /// non-modifiable client role of the page
+  final ClientRole role;
+
+  /// Creates a call page with given channel name.
+  const CallPage({Key key, this.channelName, this.role}) : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -46,24 +49,24 @@ class _CallPageState extends State<CallPage> {
         _infoStrings.add('APP_ID missing, please provide your APP_ID in settings.dart');
         _infoStrings.add('Agora Engine is not starting');
       });*/
-
       return;
     }
 
     await _initAgoraRtcEngine();
     _addAgoraEventHandlers();
-
     await AgoraRtcEngine.enableWebSdkInteroperability(true);
-    await AgoraRtcEngine.setParameters(
-        '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
-
+    VideoEncoderConfiguration configuration = VideoEncoderConfiguration();
+    configuration.dimensions = Size(1920, 1080);
+    await AgoraRtcEngine.setVideoEncoderConfiguration(configuration);
     await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
   }
 
-  // Create agora sdk instance and initialize
+  /// Create agora sdk instance and initialize
   Future<void> _initAgoraRtcEngine() async {
     await AgoraRtcEngine.create(APP_ID);
     await AgoraRtcEngine.enableVideo();
+    await AgoraRtcEngine.setChannelProfile(ChannelProfile.Communication);
+    await AgoraRtcEngine.setClientRole(widget.role);
   }
 
   // Add agora event handlers

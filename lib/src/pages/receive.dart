@@ -1,5 +1,6 @@
 // Created by AMIT JANGID on 08/06/20.
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_call/src/pages/call.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -56,7 +57,10 @@ class ReceivePage extends StatelessWidget {
     await _handleCameraAndMic();
 
     // push video page with given channel name
-    await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor')));
+    await Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor', role: ClientRole.Broadcaster)),
+    );
   }
 
   Future<void> _handleCameraAndMic() async {

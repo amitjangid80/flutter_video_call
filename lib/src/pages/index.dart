@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_call/src/pages/receive.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -52,7 +53,10 @@ class IndexState extends State<IndexPage> {
     await _handleCameraAndMic();
 
     // push video page with given channel name
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor')));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor', role: ClientRole.Broadcaster)),
+    );
   }
 
   Future<void> _handleCameraAndMic() async {
