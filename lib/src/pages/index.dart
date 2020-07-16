@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_call/src/pages/call.dart';
 import 'package:flutter_video_call/src/pages/receive.dart';
+import 'package:flutter_video_call/src/rest/api_services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import './call.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -51,6 +52,9 @@ class IndexState extends State<IndexPage> {
   Future<void> onJoin() async {
     // await for camera and mic permissions before pushing video page
     await _handleCameraAndMic();
+
+    // calling send notification method
+    await ApiService.sendNotification();
 
     // push video page with given channel name
     await Navigator.push(

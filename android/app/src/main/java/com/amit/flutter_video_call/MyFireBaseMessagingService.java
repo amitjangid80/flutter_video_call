@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -22,13 +23,12 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Random;
 
-import io.flutter.plugin.common.MethodChannel;
-
 public class MyFireBaseMessagingService extends FirebaseMessagingService
 {
     private static final String TAG = MyFireBaseMessagingService.class.getSimpleName();
 
-    private static String ADMIN_CHANNEL_ID = "admin_channel";
+    public static Ringtone ringtone;
+    private static String ADMIN_CHANNEL_ID = "flutterActionNotification";
 
     @Override
     public void onNewToken(@NonNull String s)
@@ -55,16 +55,33 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
+        Intent acceptBtnBroadCastIntent = new Intent(this, NotificationReceiver.class);
+        acceptBtnBroadCastIntent.putExtra("callAction", "AcceptCall");
+
+        PendingIntent acceptBtnActionIntent = PendingIntent.getBroadcast(this,
+                1, acceptBtnBroadCastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent declineBtnBroadCastIntent = new Intent(this, NotificationReceiver.class);
+        declineBtnBroadCastIntent.putExtra("callAction", "DeclineCall");
+
+        PendingIntent declineBtnActionIntent = PendingIntent.getBroadcast(this,
+                2, declineBtnBroadCastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        ringtone = RingtoneManager.getRingtone(this, defaultSoundUri);
+        ringtone.play();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(remoteMessage.getData().get("title"))
                 .setContentText(remoteMessage.getData().get("message"))
-                .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
+                .setSound(null)
+                .addAction(R.mipmap.ic_launcher, "Accept", acceptBtnActionIntent)
+                .addAction(R.mipmap.ic_launcher, "Decline", declineBtnActionIntent)
                 .setAutoCancel(true);
 
         notificationManagerCompat.notify(notificationId, mBuilder.build());

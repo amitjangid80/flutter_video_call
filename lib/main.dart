@@ -1,8 +1,14 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_call/src/pages/index.dart';
 
+final String topic = "/topics/videoCall";
+final String fcmPath = "https://fcm.googleapis.com/fcm/";
+final String serverKey = "key=AAAAETZEGIU:APA91bF4RqF0cXvh3lsVFAJCZT39PQuIcTkrcbgaMj5kfdrJoavaxa3HJElBkWv423WC5Wjo0hojm3JHi7eMlcANYaEjesSuNFFTrgwQofc5_dN2u8bQsS25WLIxGtiRud-4edCkDtde";
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging().subscribeToTopic(topic);
 
   runApp(MyApp());
 }
