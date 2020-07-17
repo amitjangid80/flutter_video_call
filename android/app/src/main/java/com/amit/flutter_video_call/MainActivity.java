@@ -1,5 +1,6 @@
 package com.amit.flutter_video_call;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -24,24 +25,27 @@ public class MainActivity extends FlutterActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String METHOD_CHANNEL = "com.amit.flutter_video_call/videoCall";
 
+    public static FlutterEngine mFlutterEngine;
     private static final String SERVER_KEY = "key=AAAAETZEGIU:APA91bF4RqF0cXvh3lsVFAJCZT39PQuIcTkrcbgaMj5kfdrJoavaxa3HJElBkWv423WC5Wjo0hojm3JHi7eMlcANYaEjesSuNFFTrgwQofc5_dN2u8bQsS25WLIxGtiRud-4edCkDtde";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)
     {
         super.configureFlutterEngine(flutterEngine);
+        mFlutterEngine = flutterEngine;
 
-        Bundle myExtras = getIntent().getExtras();
+        /*Bundle myExtras = getIntent().getExtras();
 
         if (myExtras != null)
         {
             String receiveCall = myExtras.getString("receiveCall");
+            Log.e(TAG, "configureFlutterEngine: receive call string value is: " + receiveCall);
 
             if (receiveCall != null && receiveCall.equalsIgnoreCase("doctorCalling"))
             {
                 new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), METHOD_CHANNEL).invokeMethod("receiveCall", receiveCall);
             }
-        }
+        }*/
 
         // FirebaseMessaging.getInstance().subscribeToTopic("/topics/videoCall");
 
@@ -53,6 +57,21 @@ public class MainActivity extends FlutterActivity
                 makeVideoCall(callerName, result);
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent)
+    {
+        super.onNewIntent(intent);
+        String action = intent.getAction();
+        FlutterEngine flutterEngine = getFlutterEngine();
+
+        boolean routeIntent = action != null && action.equalsIgnoreCase("openCallPage");
+
+        if (routeIntent && flutterEngine != null)
+        {
+            flutterEngine.getNavigationChannel().pushRoute("callPage");
+        }
     }
 
     private void makeVideoCall(String callerName, MethodChannel.Result result)
@@ -90,7 +109,7 @@ public class MainActivity extends FlutterActivity
             sendNotification.enqueue(new Callback<String>()
             {
                 @Override
-                public void onResponse(Call<String> call, Response<String> response)
+                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response)
                 {
                     Log.e(TAG, "onResponse: response from server is: " + response);
 
@@ -102,7 +121,7 @@ public class MainActivity extends FlutterActivity
                 }
 
                 @Override
-                public void onFailure(Call<String> call, Throwable t)
+                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t)
                 {
                     Log.e(TAG, "onFailure: response error:");
                     t.printStackTrace();

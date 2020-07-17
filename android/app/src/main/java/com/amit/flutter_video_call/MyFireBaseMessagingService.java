@@ -28,6 +28,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
     private static final String TAG = MyFireBaseMessagingService.class.getSimpleName();
 
     public static Ringtone ringtone;
+    public static int notificationId;
     private static String ADMIN_CHANNEL_ID = "flutterActionNotification";
 
     @Override
@@ -42,10 +43,11 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
         super.onMessageReceived(remoteMessage);
 
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction("openCallPage");
         intent.putExtra("receiveCall", "doctorCalling");
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        int notificationId = new Random().nextInt(3000);
+        notificationId = new Random().nextInt(3000);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {

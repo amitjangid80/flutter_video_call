@@ -35,7 +35,7 @@ class ApiService {
   static Future<void> sendNotification() async {
     try {
       var _notificationBody = {'title': 'Doctor', 'message': 'Call from Doctor'};
-      var _notification = {'to': topic, 'data': _notificationBody};
+      var _notification = {'to': patientTopic, 'data': _notificationBody};
       var _response = await _dio.post('send', data: _notification);
 
       debugPrint('response from server is: $_response');

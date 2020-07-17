@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import androidx.core.app.NotificationManagerCompat;
+
+import io.flutter.plugin.common.MethodChannel;
+
 /**
  * Created by AMIT JANGID on 16/07/20.
  **/
@@ -27,6 +31,18 @@ public class NotificationReceiver extends BroadcastReceiver
                 if (MyFireBaseMessagingService.ringtone.isPlaying())
                 {
                     MyFireBaseMessagingService.ringtone.stop();
+                    final String methodChannel = "com.amit.flutter_video_call/videoCall";
+
+                    try
+                    {
+                        // context.startActivity(new Intent(context, MainActivity.class));
+                        new MethodChannel(MainActivity.mFlutterEngine.getDartExecutor().getBinaryMessenger(), methodChannel).invokeMethod("receiveCall", "receiveCall");
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e(TAG, "onReceive: exception while invoking flutter method: ");
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -39,6 +55,9 @@ public class NotificationReceiver extends BroadcastReceiver
                     MyFireBaseMessagingService.ringtone.stop();
                 }
             }
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            notificationManagerCompat.cancel(MyFireBaseMessagingService.notificationId);
         }
         catch (Exception e)
         {
