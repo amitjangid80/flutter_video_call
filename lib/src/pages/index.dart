@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_call/main.dart';
-import 'package:flutter_video_call/src/pages/receive.dart';
+import 'package:flutter_video_call/src/pages/call.dart';
 import 'package:flutter_video_call/src/rest/api_services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -92,11 +93,11 @@ class IndexState extends State<IndexPage> {
     // calling send notification method
     await ApiService.sendNotification();
 
-    /*// push video page with given channel name
+    // push video page with given channel name
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor', role: ClientRole.Broadcaster)),
-    );*/
+    );
   }
 
   Future<void> _handleCameraAndMic() async {
