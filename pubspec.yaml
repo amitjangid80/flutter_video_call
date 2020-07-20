@@ -25,10 +25,10 @@ dependencies:
   cupertino_icons: any
 
   dio: any
+  provider: any
   agora_rtc_engine: any
   permission_handler: any
   firebase_messaging: any
-  flutter_ringtone_player: any
 
 dev_dependencies:
   flutter_test:

@@ -1,43 +1,25 @@
 import 'dart:async';
 
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_call/blocs/user_type_bloc.dart';
 import 'package:flutter_video_call/main.dart';
-import 'package:flutter_video_call/src/pages/call.dart';
 import 'package:flutter_video_call/src/rest/api_services.dart';
+import 'package:flutter_video_call/src/routes/routes.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class IndexPage extends StatefulWidget {
-  final bool isDoctorApp;
-
-  IndexPage({@required this.isDoctorApp});
-
   @override
   State<StatefulWidget> createState() => IndexState();
 }
 
 class IndexState extends State<IndexPage> {
   @override
-  void initState() {
-    super.initState();
-
-    // calling register app method
-    _registerApp();
-  }
-
-  _registerApp() async {
-    if (widget.isDoctorApp) {
-      FirebaseMessaging().subscribeToTopic(doctorTopic);
-    } else {
-      FirebaseMessaging().subscribeToTopic(patientTopic);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    UserTypeBloc _userTypeBloc = Provider.of<UserTypeBloc>(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text('Agora Flutter QuickStart')),
+      appBar: AppBar(title: Text('Mumbai Clinic Demo')),
       body: Container(
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -47,10 +29,10 @@ class IndexState extends State<IndexPage> {
             ListTile(
               leading: Icon(Icons.person, size: 30, color: Colors.black),
               title: Text(
-                !widget.isDoctorApp ? 'Doctor Name' : 'Patient Name',
+                !_userTypeBloc.isDoctorApp ? 'Doctor Name' : 'Patient Name',
                 style: Theme.of(context).textTheme.title,
               ),
-              trailing: widget.isDoctorApp
+              trailing: _userTypeBloc.isDoctorApp
                   ? IconButton(
                       iconSize: 30,
                       onPressed: () => onJoin(),
@@ -94,10 +76,7 @@ class IndexState extends State<IndexPage> {
     await ApiService.sendNotification();
 
     // push video page with given channel name
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor', role: ClientRole.Broadcaster)),
-    );
+    await Navigator.pushNamed(context, callRoute);
   }
 
   Future<void> _handleCameraAndMic() async {

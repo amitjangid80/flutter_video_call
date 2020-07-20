@@ -43,7 +43,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
         super.onMessageReceived(remoteMessage);
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.setAction("openCallPage");
+        intent.setAction("openCallScreen");
         intent.putExtra("receiveCall", "doctorCalling");
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
@@ -55,7 +55,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent acceptBtnBroadCastIntent = new Intent(this, NotificationReceiver.class);
         acceptBtnBroadCastIntent.putExtra("callAction", "AcceptCall");
@@ -87,7 +87,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService
                 .setAutoCancel(true);
 
         notificationManagerCompat.notify(notificationId, mBuilder.build());
-
+        startActivity(intent);
     }
 
     /*

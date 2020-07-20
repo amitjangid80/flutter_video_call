@@ -1,18 +1,10 @@
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_call/main.dart';
 import '../utils/settings.dart';
 
 class CallPage extends StatefulWidget {
-  // non-modifiable channel name of the page
-  final String channelName;
-
-  /// non-modifiable client role of the page
-  final ClientRole role;
-
-  /// Creates a call page with given channel name.
-  const CallPage({Key key, this.channelName, this.role}) : super(key: key);
-
   @override
   _CallPageState createState() => _CallPageState();
 }
@@ -58,7 +50,7 @@ class _CallPageState extends State<CallPage> {
     VideoEncoderConfiguration configuration = VideoEncoderConfiguration();
     configuration.dimensions = Size(1920, 1080);
     await AgoraRtcEngine.setVideoEncoderConfiguration(configuration);
-    await AgoraRtcEngine.joinChannel(null, widget.channelName, null, 0);
+    await AgoraRtcEngine.joinChannel(null, callChannelName, null, 0);
   }
 
   /// Create agora sdk instance and initialize
@@ -66,7 +58,7 @@ class _CallPageState extends State<CallPage> {
     await AgoraRtcEngine.create(APP_ID);
     await AgoraRtcEngine.enableVideo();
     await AgoraRtcEngine.setChannelProfile(ChannelProfile.Communication);
-    await AgoraRtcEngine.setClientRole(widget.role);
+    await AgoraRtcEngine.setClientRole(ClientRole.Broadcaster);
   }
 
   // Add agora event handlers

@@ -1,8 +1,8 @@
 // Created by AMIT JANGID on 08/06/20.
 
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_video_call/src/pages/call.dart';
+import 'package:flutter_video_call/main.dart';
+import 'package:flutter_video_call/src/routes/routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ReceivePage extends StatelessWidget {
@@ -19,12 +19,12 @@ class ReceivePage extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Center(
-                child: Container(child: Text('Doctor Calling...', style: Theme.of(context).textTheme.display1)),
+                child: Container(child: Text('Doctor Calling...', style: Theme.of(context).textTheme.headline3)),
               ),
             ),
             SafeArea(
               child: Container(
-                /*margin: EdgeInsets.symmetric(horizontal: 40),*/
+                margin: EdgeInsets.symmetric(vertical: 20),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,10 +57,7 @@ class ReceivePage extends StatelessWidget {
     await _handleCameraAndMic();
 
     // push video page with given channel name
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => CallPage(channelName: 'doctor', role: ClientRole.Broadcaster)),
-    );
+    await Navigator.pushReplacementNamed(context, callRoute);
   }
 
   Future<void> _handleCameraAndMic() async {

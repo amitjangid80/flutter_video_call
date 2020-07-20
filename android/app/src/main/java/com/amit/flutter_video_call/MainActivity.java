@@ -1,80 +1,58 @@
 package com.amit.flutter_video_call;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import com.amit.flutter_video_call.rest.ApiClient;
-import com.amit.flutter_video_call.rest.ApiInterface;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import org.json.JSONObject;
+import androidx.core.app.NotificationManagerCompat;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.plugin.common.MethodChannel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends FlutterActivity
 {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String METHOD_CHANNEL = "com.amit.flutter_video_call/videoCall";
+    // public static final String METHOD_CHANNEL = "com.amit.flutter_video_call/videoCall";
 
     public static FlutterEngine mFlutterEngine;
-    private static final String SERVER_KEY = "key=AAAAETZEGIU:APA91bF4RqF0cXvh3lsVFAJCZT39PQuIcTkrcbgaMj5kfdrJoavaxa3HJElBkWv423WC5Wjo0hojm3JHi7eMlcANYaEjesSuNFFTrgwQofc5_dN2u8bQsS25WLIxGtiRud-4edCkDtde";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)
     {
         super.configureFlutterEngine(flutterEngine);
         mFlutterEngine = flutterEngine;
-
-        /*Bundle myExtras = getIntent().getExtras();
-
-        if (myExtras != null)
-        {
-            String receiveCall = myExtras.getString("receiveCall");
-            Log.e(TAG, "configureFlutterEngine: receive call string value is: " + receiveCall);
-
-            if (receiveCall != null && receiveCall.equalsIgnoreCase("doctorCalling"))
-            {
-                new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), METHOD_CHANNEL).invokeMethod("receiveCall", receiveCall);
-            }
-        }*/
-
-        // FirebaseMessaging.getInstance().subscribeToTopic("/topics/videoCall");
-
-        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), METHOD_CHANNEL).setMethodCallHandler((call, result) ->
-        {
-            if (call.method.equalsIgnoreCase("makeVideoCall"))
-            {
-                String callerName = call.argument("callerName").toString();
-                makeVideoCall(callerName, result);
-            }
-        });
     }
 
     @Override
     protected void onNewIntent(@NonNull Intent intent)
     {
         super.onNewIntent(intent);
+        Log.e(TAG, "onNewIntent: on new intent method called");
+
         String action = intent.getAction();
         FlutterEngine flutterEngine = getFlutterEngine();
 
-        boolean routeIntent = action != null && action.equalsIgnoreCase("openCallPage");
+        // Log.e(TAG, "onNewIntent: intent action name is: " + action);
+        // new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), METHOD_CHANNEL).invokeMethod("receiveCall", action);
+
+        boolean routeIntent = action != null && action.equalsIgnoreCase("openCallScreen");
 
         if (routeIntent && flutterEngine != null)
         {
-            flutterEngine.getNavigationChannel().pushRoute("callPage");
+            Log.e(TAG, "onNewIntent: navigation to call page started");
+            flutterEngine.getNavigationChannel().pushRoute("receivePage");
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.cancel(MyFireBaseMessagingService.notificationId);
+
+            if (MyFireBaseMessagingService.ringtone.isPlaying())
+            {
+                MyFireBaseMessagingService.ringtone.stop();
+            }
         }
     }
 
-    private void makeVideoCall(String callerName, MethodChannel.Result result)
+    /*private void makeVideoCall(String callerName, MethodChannel.Result result)
     {
         try
         {
@@ -135,5 +113,5 @@ public class MainActivity extends FlutterActivity
             Log.e(TAG, "sendNotification: exception while sending notification:\n");
             e.printStackTrace();
         }
-    }
+    }*/
 }

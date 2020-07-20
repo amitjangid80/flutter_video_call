@@ -35,7 +35,7 @@ public class NotificationReceiver extends BroadcastReceiver
 
                     try
                     {
-                        // context.startActivity(new Intent(context, MainActivity.class));
+                        context.startActivity(new Intent(context, MainActivity.class));
                         new MethodChannel(MainActivity.mFlutterEngine.getDartExecutor().getBinaryMessenger(), methodChannel).invokeMethod("receiveCall", "receiveCall");
                     }
                     catch (Exception e)
