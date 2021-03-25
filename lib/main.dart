@@ -1,6 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import 'package:provider/provider.dart';
 import 'package:flutter_video_call/blocs/user_type_bloc.dart';
 import 'package:flutter_video_call/src/pages/main_page.dart';
 import 'package:flutter_video_call/src/routes/custom_route.dart';
@@ -21,8 +22,10 @@ void requestPermission() async {
   await [Permission.camera, Permission.microphone, Permission.phone].request();
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
 
   // calling request permission method
   requestPermission();

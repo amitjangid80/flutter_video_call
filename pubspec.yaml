@@ -14,7 +14,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.5.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,8 +26,10 @@ dependencies:
 
   dio: any
   provider: any
-  agora_rtc_engine: any
-  permission_handler: any
+  agora_rtc_engine: 1.0.10
+  permission_handler: 5.0.1+2
+
+  firebase_core: any
   firebase_messaging: any
 
 dev_dependencies:
